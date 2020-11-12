@@ -1,0 +1,43 @@
+body {
+  margin: 5px 10px 15px 10px;
+  padding: 15px;
+  line-height: 2.5em;
+  font-family: 'Spartan', sans-serif;
+  font-weight: 300;
+  display: table;
+  width: 100%;
+  align-content: center;
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Spartan', sans-serif;
+  font-weight: 100;
+  font-size: 3.5em;
+  color: #1375d6;
+}
+
+form {
+  border: 1px double #c9e4ff;
+  width: 500px;
+  height: auto;
+  margin: 0 auto;
+  padding: 10px;
+  position: relative;
+  align-content: center;
+}
+
+#fields {
+  width: 100%;
+  padding: 15px;
+}
+
+#usernameError, #zipError, #passwordError, #passwordAgainError {
+  text-align: center;
+}
+
+#button {
+  padding: 10px;
+  text-align: center;
+  display: block;
+}

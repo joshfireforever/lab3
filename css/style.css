@@ -41,3 +41,13 @@ form {
   text-align: center;
   display: block;
 }
+
+#confirmation {
+  border: 1px double #c9e4ff;
+  width: 500px;
+  height: auto;
+  margin: 0 auto;
+  padding: 10px;
+  position: relative;
+  text-align: center;
+}

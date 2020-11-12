@@ -27,13 +27,10 @@
            
             State: &nbsp
             <select id="state" name="state">
-               <option> Select One </option> 
-               <option value="ca"> California </option>
-               <option value="ny"> New York   </option>
-               <option value="tx"> Texas      </option>
+               <option> Select One </option>
             </select><br>
             
-            Select a County: &nbsp<select id="county"></select><br>
+            Select a County: &nbsp<select id="county" name="county"></select><br>
             
             Desired Username: <input type="text" id="username" name="username" class="form-control" aria-label="Username">
                               <div id="usernameError"></div>
@@ -46,10 +43,25 @@
         </form>
         
         <script>
+        $(document).ready(function() {
             /*global $*/
             /*global fetch*/
             
+            populateStates();
+            let tempAbbr = "";
+            
+            async function populateStates () {
+                let stateURL = "https://cst336.herokuapp.com/projects/api/state_abbrAPI.php";
+                let response = await fetch(stateURL);
+                let data = await response.json();
+
+                data.forEach( function(i){ 
+                    $("#state").append(`<option value="${i.usps}"> ${i.state} </option>`);
+                });
+            }
+            
             var usernameAvailable = false;
+            var selectedCounty = "";
                     
             //Displaying City from API after typing a zip code    
             $("#zip").on("change", async function() {
@@ -73,6 +85,20 @@
                 $("#city").html(data.city);
                 $("#latitude").html(data.latitude);
                 $("#longitude").html(data.longitude);
+                selectedCounty = data.county;
+                
+                let stateURL = "https://cst336.herokuapp.com/projects/api/state_abbrAPI.php";
+                let stateResponse = await fetch(stateURL);
+                let stateData = await stateResponse.json();
+                let tempStr = "";
+                
+                stateData.forEach( function(i) { 
+                    if (data.state == i.usps) {
+                        $('[name=state]').val(`${i.usps}`);
+                        $("#state").change();
+                        return;
+                    }
+                });
             });//zip
              
             $("#state").on("change", async function() {
@@ -86,6 +112,9 @@
                 //console.log(data);
                 data.forEach( function(i){ 
                     $("#county").append(`<option> ${i.county} </option>`);
+                    if (selectedCounty == i.county) {
+                        $('[name=county]').val(`${i.county}`);
+                    }
                 });
 
             });//state
@@ -111,49 +140,50 @@
 
             });//username
             
-        $("#signupForm").submit(function(e) {
-       
-            //alert("submitting form...");
-            if (!isFormValid()) {
-                e.preventDefault();
-            }
-            
-            function isFormValid() {
-                
-                var isValid = true;
-                
-                //Username Checking
-                if (!usernameAvailable) {
-                  isValid = false;
-                }
-                
-                if ($("#username").val().length == 0) {
-                    isValid = false;
-                    $("#usernameError").html("Username is required!");
-                    $("#usernameError").attr("class", "bg-danger text-white");
-                }
-              
-                //Password Checking
-                if ($("#password").val().length < 6 ) {
-                    $("#passwordError").html("Enter a password of at least 6 characters!");
-                    $("#passwordError").attr("class", "bg-danger text-white");
-                    isValid = false;
-                }
-                else if ($("#password").val() != $("#passwordAgain").val()) {
-                    $("#passwordError").empty();
-                    $("#passwordAgainError").html("Password Mismatch!");
-                    $("#passwordAgainError").attr("class", "bg-danger text-white");
-                    isValid = false;
-                }
-                else {
-                    $("#passwordError").empty();
-                    $("#passwordAgainError").empty();
-                }
-                
-                return isValid;
-            }
+            $("#signupForm").submit(function(e) {
            
-       });//signupForm
+                //alert("submitting form...");
+                if (!isFormValid()) {
+                    e.preventDefault();
+                }
+                
+                function isFormValid() {
+                    
+                    var isValid = true;
+                    
+                    //Username Checking
+                    if (!usernameAvailable) {
+                      isValid = false;
+                    }
+                    
+                    if ($("#username").val().length == 0) {
+                        isValid = false;
+                        $("#usernameError").html("Username is required!");
+                        $("#usernameError").attr("class", "bg-danger text-white");
+                    }
+                  
+                    //Password Checking
+                    if ($("#password").val().length < 6 ) {
+                        $("#passwordError").html("Enter a password of at least 6 characters!");
+                        $("#passwordError").attr("class", "bg-danger text-white");
+                        isValid = false;
+                    }
+                    else if ($("#password").val() != $("#passwordAgain").val()) {
+                        $("#passwordError").empty();
+                        $("#passwordAgainError").html("Password Mismatch!");
+                        $("#passwordAgainError").attr("class", "bg-danger text-white");
+                        isValid = false;
+                    }
+                    else {
+                        $("#passwordError").empty();
+                        $("#passwordAgainError").empty();
+                    }
+                    
+                    return isValid;
+                }
+               
+            });//signupForm
+        });
         </script>
     </body>
 </html>
